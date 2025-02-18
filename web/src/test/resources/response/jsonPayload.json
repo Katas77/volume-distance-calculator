@@ -1,0 +1,17 @@
+{
+  "packages": [
+    {
+      "weight": 4056,
+      "length": 2000,
+      "width": 800,
+      "height": 600
+    },
+    {
+      "weight": 5678,
+      "length": 2200,
+      "width": 900,
+      "height": 700
+    }
+  ],
+  "currencyCode": "RUB"
+}
