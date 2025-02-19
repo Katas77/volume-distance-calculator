@@ -1,8 +1,0 @@
-delivery-cost-config:
-  departure:
-    latitude: 55.7558 # Широта Москвы
-    longitude: 37.6173 # Долгота Москвы
-  destination:
-    latitude: 59.9343 # Широта Санкт-Петербурга
-    longitude: 30.3351 # Долгота Санкт-Петербурга
-  cubic-meter: 1000  # Базовая стоимость за километр в рублях

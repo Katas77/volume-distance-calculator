@@ -2,17 +2,21 @@ package ru.fastdelivery.presentation.config;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.context.annotation.Configuration;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
 @Getter
 @Setter
-@Configuration
-@ConfigurationProperties(prefix = "delivery-cost-config")
+@Component
 public class ConfigLoader {
+    @Value("${delivery-cost-config.departure.latitude}")
     private double departureLatitude;
+    @Value("${delivery-cost-config.departure.longitude}")
     private double departureLongitude;
+    @Value("${delivery-cost-config.destination.latitude}")
     private double destinationLatitude;
+    @Value("${delivery-cost-config.destination.longitude}")
     private double destinationLongitude;
+    @Value("${delivery-cost-config.cubic-meter}")
     private double costCubicMeter;
 }

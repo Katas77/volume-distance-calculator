@@ -6,7 +6,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,11 +17,9 @@ import ru.fastdelivery.domain.delivery.shipment.Shipment;
 import ru.fastdelivery.presentation.api.request.CalculatePackagesRequest;
 import ru.fastdelivery.presentation.api.request.CargoPackage;
 import ru.fastdelivery.presentation.api.response.CalculatePackagesResponse;
-import ru.fastdelivery.domain.common.price.CalculateVolume;
-import ru.fastdelivery.domain.common.price.Packages;
+import ru.fastdelivery.domain.common.price.VolumeParameter;
 import ru.fastdelivery.presentation.config.ConfigLoader;
 import ru.fastdelivery.usecase.TariffCalculateUseCase;
-
 import java.util.List;
 
 @RestController
@@ -30,17 +27,15 @@ import java.util.List;
 @RequiredArgsConstructor
 @Tag(name = "Расчеты стоимости доставки")
 public class CalculateController {
-
     private final TariffCalculateUseCase tariffCalculateUseCase;
     private final CurrencyFactory currencyFactory;
-private final ConfigLoader loader;
-
+    private final ConfigLoader loader;
 
     @PostMapping
     @Operation(summary = "Расчет стоимости по упаковкам груза")
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "Successful operation"),
-        @ApiResponse(responseCode = "400", description = "Invalid input provided")
+            @ApiResponse(responseCode = "200", description = "Successful operation"),
+            @ApiResponse(responseCode = "400", description = "Invalid input provided")
     })
     public CalculatePackagesResponse calculate(
             @Valid @RequestBody CalculatePackagesRequest request) {
@@ -50,14 +45,14 @@ private final ConfigLoader loader;
                 .map(Weight::new)
                 .map(Pack::new)
                 .toList();
-
-        var shipment = new Shipment(packsWeights, currencyFactory.create(request.currencyCode()));
+        List<VolumeParameter> packagesList = request.packages().stream()
+                .map(cp -> new VolumeParameter(cp.length(), cp.width(), cp.height()))
+                .toList();
+        Shipment shipment = new Shipment(packsWeights, currencyFactory.create(request.currencyCode()), packagesList,
+                loader.getDepartureLatitude(), loader.getDepartureLongitude(), loader.getDestinationLatitude(),
+                loader.getDestinationLongitude(), loader.getCostCubicMeter());
         var calculatedPrice = tariffCalculateUseCase.calc(shipment);
         var minimalPrice = tariffCalculateUseCase.minimalPrice();
-        List<Packages> packagesList=request.packages().stream().map(cp -> new Packages(cp.length(), cp.width(), cp.height()))
-                .toList();
-        System.out.println(new CalculateVolume().calculateDeliveryCost(packagesList, loader.getCostCubicMeter())+"jjjjj");
         return new CalculatePackagesResponse(calculatedPrice, minimalPrice);
     }
 }
-

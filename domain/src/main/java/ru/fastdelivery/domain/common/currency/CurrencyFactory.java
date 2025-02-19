@@ -14,7 +14,6 @@ public class CurrencyFactory {
         if (code == null || !propertiesProvider.isAvailable(code)) {
             throw new IllegalArgumentException("Currency code contains not available value");
         }
-
         return new Currency(code);
     }
 }

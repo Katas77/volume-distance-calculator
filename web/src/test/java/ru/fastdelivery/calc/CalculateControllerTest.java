@@ -22,9 +22,7 @@ import ru.fastdelivery.presentation.api.request.CargoPackage;
 import ru.fastdelivery.presentation.api.response.CalculatePackagesResponse;
 import ru.fastdelivery.presentation.config.ConfigLoader;
 import ru.fastdelivery.presentation.controller.CalculateController;
-import ru.fastdelivery.domain.common.price.CalculateVolume;
 import ru.fastdelivery.usecase.TariffCalculateUseCase;
-
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
@@ -33,9 +31,7 @@ import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
 import java.text.MessageFormat;
 import java.util.List;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.setup.MockMvcBuilders.standaloneSetup;
@@ -50,8 +46,6 @@ class CalculateControllerTest extends ControllerTest {
     @MockBean
     CurrencyFactory currencyFactory;
     MockMvc mockMvc;
-    @MockBean
-    CalculateVolume service;
 
     @BeforeEach
     void setup() {
@@ -92,7 +86,6 @@ class CalculateControllerTest extends ControllerTest {
         ResponseEntity<CalculatePackagesResponse> response =
                 restTemplate.postForEntity(baseCalculateApi, request, CalculatePackagesResponse.class);
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
-
     }
 
     private String readStringFromResource(String resourcePath) {
@@ -122,5 +115,3 @@ class CalculateControllerTest extends ControllerTest {
     }
 
 }
-
-
